@@ -6,6 +6,9 @@ const router = Router();
 // get all talents
 router.get('/', TalentController.listAll)
 
+// get one talent by username
+router.get('/username/:username', TalentController.getOneByUsername)
+
 // get one talent
 router.get('/:id([0-9]+)', TalentController.getOneById)
 

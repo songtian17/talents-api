@@ -13,6 +13,23 @@ class TalentController {
     res.send(talents);
   };
 
+  static getOneByUsername = async (req: Request, res: Response) => {
+    // get lowercase username from url
+    const username: string = req.params.username.toLowerCase();
+    console.log(username)
+
+    // get talent from db
+    const talentRepository = getRepository(Talent);
+    try {
+      const talent = await talentRepository.findOneOrFail({
+        where: { username }
+      });
+      res.send(talent);
+    } catch (err) {
+      res.send(404).send("Talent not found");
+    }
+  };
+
   static getOneById = async (req: Request, res: Response) => {
     // get id from url
     const id: number = Number(req.params.id);
@@ -31,7 +48,7 @@ class TalentController {
     // get params from body
     let { name, username, profileImageUri, bio } = req.body;
     let talent = new Talent();
-    talent.name = name;
+    talent.name = name.toLowerCase();
     talent.username = username;
     talent.profileImageUri = profileImageUri;
     talent.bio = bio;
