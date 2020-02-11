@@ -77,7 +77,7 @@ class TalentController {
     }
 
     talent.name = name;
-    talent.username = username;
+    talent.username = username.toLowerCase();
     talent.profileImageUri = profileImageUri;
     talent.bio = bio;
 
