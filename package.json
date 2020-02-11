@@ -1,0 +1,32 @@
+{
+  "name": "talents-api",
+  "version": "0.0.1",
+  "description": "Talents API developed with TypeORM.",
+  "devDependencies": {
+    "@types/node": "^8.0.29",
+    "ts-node": "3.3.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "3.3.3333"
+  },
+  "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/body-parser": "^1.17.1",
+    "@types/cors": "^2.8.6",
+    "@types/jsonwebtoken": "^8.3.7",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "class-validator": "^0.11.0",
+    "cors": "^2.8.5",
+    "express": "^4.15.4",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^7.18.1",
+    "reflect-metadata": "^0.1.10",
+    "typeorm": "0.2.22"
+  },
+  "scripts": {
+    "tsc": "tsc",
+    "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
+    "prod": "tsc && node ./build/app.js",
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
+  }
+}

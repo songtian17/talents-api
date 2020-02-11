@@ -1,0 +1,93 @@
+import { Request, Response } from "express";
+import { getRepository } from "typeorm";
+import { validate } from "class-validator";
+
+import { Talent } from "../entity/Talent";
+import { userInfo } from "os";
+
+class TalentController {
+  static listAll = async (req: Request, res: Response) => {
+    // get talents from database
+    const talentRepository = getRepository(Talent);
+    const talents = await talentRepository.find();
+    res.send(talents);
+  };
+
+  static getOneById = async (req: Request, res: Response) => {
+    // get id from url
+    const id: number = Number(req.params.id);
+
+    // get talent from db
+    const talentRepository = getRepository(Talent);
+    try {
+      const talent = await talentRepository.findOneOrFail(id);
+      res.send(talent);
+    } catch (err) {
+      res.status(404).send("Talent not found");
+    }
+  };
+
+  static newTalent = async (req: Request, res: Response) => {
+    // get params from body
+    let { name, username, profileImageUri, bio } = req.body;
+    let talent = new Talent();
+    talent.name = name;
+    talent.username = username;
+    talent.profileImageUri = profileImageUri;
+    talent.bio = bio;
+
+    const talentRepository = getRepository(Talent);
+    try {
+      await talentRepository.save(talent);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+
+    res.status(201).send("Talent created");
+  };
+
+  static editTalent = async (req: Request, res: Response) => {
+    const id: number = Number(req.params.id);
+
+    const { name, username, profileImageUri, bio } = req.body;
+
+    const talentRepository = getRepository(Talent);
+    let talent: Talent;
+    try {
+      talent = await talentRepository.findOneOrFail(id);
+    } catch (err) {
+      res.status(404).send("Talent not found");
+    }
+
+    talent.name = name;
+    talent.username = username;
+    talent.profileImageUri = profileImageUri;
+    talent.bio = bio;
+
+    try {
+      await talentRepository.save(talent);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+
+    res.status(200).send("Talent updated");
+  };
+
+  static deleteTalent = async (req: Request, res: Response) => {
+    const id: number = Number(req.params.id);
+
+    const talentRepository = getRepository(Talent);
+    let talent: Talent;
+
+    try {
+      talent = await talentRepository.findOneOrFail(id);
+    } catch (err) {
+      res.status(404).send("Talent not found");
+    }
+    talentRepository.delete(id);
+
+    res.status(200).send("Talent deleted");
+  };
+}
+
+export default TalentController;
