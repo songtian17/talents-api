@@ -13,6 +13,7 @@ class PostController {
     const postRepository = getRepository(Post);
     if (req.query.user) {
       posts = await postRepository.find({
+        relations: ["talent"],
         where: { talentId: user },
         order: {
           id: "DESC"
@@ -25,6 +26,7 @@ class PostController {
     }
 
     posts = await postRepository.find({
+      relations: ["talent"],
       order: {
         id: "DESC"
       },
