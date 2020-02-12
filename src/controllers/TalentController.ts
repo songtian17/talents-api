@@ -16,7 +16,7 @@ class TalentController {
   static getOneByUsername = async (req: Request, res: Response) => {
     // get lowercase username from url
     const username: string = req.params.username.toLowerCase();
-    console.log(username)
+    console.log(username);
 
     // get talent from db
     const talentRepository = getRepository(Talent);
@@ -48,8 +48,8 @@ class TalentController {
     // get params from body
     let { name, username, profileImageUri, bio } = req.body;
     let talent = new Talent();
-    talent.name = name.toLowerCase();
-    talent.username = username;
+    talent.name = name;
+    talent.username = username.toLowerCase();
     talent.profileImageUri = profileImageUri;
     talent.bio = bio;
 

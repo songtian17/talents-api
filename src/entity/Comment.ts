@@ -3,39 +3,34 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany
+  ManyToOne
 } from "typeorm";
+import { Talent } from "./Talent";
 import { Post } from "./Post";
 
 @Entity()
-export class Talent {
+export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  content: string;
 
   @Column()
-  username: string;
+  authorId: number;
 
   @Column()
-  profileImageUri: string;
+  postId: number;
 
-  @Column()
-  bio: string;
-
-  @Column()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @ManyToOne(type => Talent)
+  author: Talent;
 
-  @OneToMany(
+  @ManyToOne(
     type => Post,
-    post => post.talent
+    post => post.comments
   )
-  posts: Post[];
+  post: Post;
 }

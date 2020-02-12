@@ -1,12 +1,12 @@
 import { Router, Request, Response } from "express";
-import user from "./user";
 import talent from "./talent";
 import post from "./post";
+import comment from "./comment";
 
 const routes = Router();
 
-routes.use("/user", user);
 routes.use("/talent", talent);
 routes.use("/post", post);
+routes.use("/comment", comment);
 
 export default routes;

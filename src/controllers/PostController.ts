@@ -12,27 +12,29 @@ class PostController {
 
     const postRepository = getRepository(Post);
     if (req.query.user) {
-      posts = await postRepository.find({
-        relations: ["talent"],
-        where: { talentId: user },
-        order: {
-          id: "DESC"
-        },
-        take: limit,
-        skip: limit * (page - 1)
-      });
+      posts = await postRepository
+        .createQueryBuilder("post")
+        .where("post.talentId = :id", { id: user })
+        .leftJoinAndSelect("post.comments", "comments")
+        .leftJoinAndSelect("post.talent", "talent")
+        .leftJoinAndSelect("comments.author", "author")
+        .orderBy("post.createdAt", "DESC")
+        .addOrderBy("comments.createdAt", "DESC")
+        .take(limit)
+        .skip(limit * (page - 1))
+        .getMany();
       res.send(posts);
       return;
     }
 
-    posts = await postRepository.find({
-      relations: ["talent"],
-      order: {
-        id: "DESC"
-      },
-      take: limit,
-      skip: limit * (page - 1)
-    });
+    posts = await postRepository
+      .createQueryBuilder("post")
+      .leftJoinAndSelect("post.comments", "comments")
+      .leftJoinAndSelect("post.talent", "talent")
+      .leftJoinAndSelect("comments.author", "author")
+      .take(limit)
+      .skip(limit * (page - 1))
+      .getMany();
     res.send(posts);
   };
 
@@ -43,7 +45,12 @@ class PostController {
     // get post from db
     const postRepository = getRepository(Post);
     try {
-      const post = await postRepository.findOneOrFail(id);
+      const post = await postRepository
+        .createQueryBuilder("post")
+        .leftJoinAndSelect("post.comments", "comments")
+        .leftJoinAndSelect("post.talent", "talent")
+        .leftJoinAndSelect("comments.author", "author")
+        .getOne();
       res.send(post);
     } catch (err) {
       res.status(404).send("Talent not found");
