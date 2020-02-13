@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { getRepository, Like } from "typeorm";
 import { validate } from "class-validator";
 
 import { Talent } from "../entity/Talent";
@@ -20,10 +20,9 @@ class TalentController {
     const talentRepository = getRepository(Talent);
     if (username) {
       try {
-        const talent = await talentRepository
-          .createQueryBuilder()
-          .where(":username IN LOWER(username)", { username })
-          .getMany();
+        const talent = await talentRepository.find({
+          where: {username: Like(username)}
+        })
         res.send(talent);
         return;
       } catch (err) {
