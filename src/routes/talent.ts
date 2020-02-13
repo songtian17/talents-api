@@ -6,6 +6,9 @@ const router = Router();
 // get all talents
 router.get("/", TalentController.listAll);
 
+// get list of talents through search
+router.get('/search', TalentController.searchAll)
+
 // get one talent by username
 router.get("/username/:username", TalentController.getOneByUsername);
 

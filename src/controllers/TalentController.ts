@@ -13,6 +13,25 @@ class TalentController {
     res.send(talents);
   };
 
+  static searchAll = async (req: Request, res: Response) => {
+    // get username search from query string
+    const username: string = req.query.username.toLowerCase();
+
+    const talentRepository = getRepository(Talent);
+    if (username) {
+      try {
+        const talent = await talentRepository
+          .createQueryBuilder()
+          .where(":username IN LOWER(username)", { username })
+          .getMany();
+        res.send(talent);
+        return;
+      } catch (err) {
+        res.status(404).send("No talents found");
+      }
+    }
+  };
+
   static getOneByUsername = async (req: Request, res: Response) => {
     // get lowercase username from url
     const username: string = req.params.username.toLowerCase();
