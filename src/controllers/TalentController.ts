@@ -21,7 +21,7 @@ class TalentController {
     if (username) {
       try {
         const talent = await talentRepository.find({
-          where: {username: Like(username)}
+          where: {username: Like(`%${username}%`)}
         })
         res.send(talent);
         return;
