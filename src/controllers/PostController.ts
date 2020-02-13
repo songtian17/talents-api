@@ -19,7 +19,6 @@ class PostController {
         .leftJoinAndSelect("post.talent", "talent")
         .leftJoinAndSelect("comments.author", "author")
         .orderBy("post.createdAt", "DESC")
-        .addOrderBy("comments.createdAt", "DESC")
         .take(limit)
         .skip(limit * (page - 1))
         .getMany();
@@ -32,6 +31,7 @@ class PostController {
       .leftJoinAndSelect("post.comments", "comments")
       .leftJoinAndSelect("post.talent", "talent")
       .leftJoinAndSelect("comments.author", "author")
+      .orderBy("post.createdAt", "DESC")
       .take(limit)
       .skip(limit * (page - 1))
       .getMany();
