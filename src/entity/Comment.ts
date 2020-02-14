@@ -30,7 +30,8 @@ export class Comment {
 
   @ManyToOne(
     type => Post,
-    post => post.comments
+    post => post.comments,
+    { onDelete: "CASCADE" }
   )
   post: Post;
 }
