@@ -53,7 +53,7 @@ class PostController {
         .getOne();
       res.send(post);
     } catch (err) {
-      res.status(404).send("Talent not found");
+      res.status(404).send("Post not found");
     }
   };
 
