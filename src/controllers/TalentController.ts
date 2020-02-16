@@ -69,6 +69,7 @@ class TalentController {
     talent.profileImageUri = profileImageUri;
     talent.bio = bio;
     talent.accountId = accountId;
+    talent.isSubscribed = false;
 
     const talentRepository = getRepository(Talent);
     try {
