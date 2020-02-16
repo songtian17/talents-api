@@ -4,11 +4,13 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  Unique
 } from "typeorm";
 import { Post } from "./Post";
 
 @Entity()
+@Unique("UNIQUE_USERNAME", ["username"])
 export class Talent {
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,6 +29,9 @@ export class Talent {
 
   @Column()
   bio: string;
+
+  @Column()
+  isSubscribed: boolean;
 
   @Column()
   @CreateDateColumn()

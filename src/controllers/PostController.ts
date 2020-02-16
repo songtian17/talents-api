@@ -71,7 +71,7 @@ class PostController {
     let post = new Post();
     post.imageUri = imageUri;
     post.talentId = talentId;
-    post.visibility = visibility;
+    post.visibility = visibility ? visibility : Visibility.PUBLIC;
 
     const postRepository = getRepository(Post);
     try {
@@ -93,7 +93,7 @@ class PostController {
     try {
       post = await postRepository.findOneOrFail(id);
       if (post.talentId != authenticatedTalentId) {
-        return res.sendStatus(403)
+        return res.sendStatus(403);
       }
     } catch (err) {
       return res.status(404).send("Post not found");
