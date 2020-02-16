@@ -62,12 +62,13 @@ class TalentController {
 
   static newTalent = async (req: Request, res: Response) => {
     // get params from body
-    let { name, username, profileImageUri, bio } = req.body;
+    let { name, username, profileImageUri, bio, accountId } = req.body;
     let talent = new Talent();
     talent.name = name;
     talent.username = username.toLowerCase();
     talent.profileImageUri = profileImageUri;
     talent.bio = bio;
+    talent.accountId = accountId;
 
     const talentRepository = getRepository(Talent);
     try {
