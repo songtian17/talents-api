@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { getRepository, MoreThan } from "typeorm";
 
 import { Post, Visibility } from "../entity/Post";
 
 class PostController {
   static listAll = async (req: Request, res: Response) => {
     let posts: Post[];
-    let user: string = req.query.user;
+    let user: number = Number(req.query.user);
+    const authenticatedTalentId = res.locals.talentId;
+    const isUser = authenticatedTalentId === user;
     const limit: number = req.query.limit ? req.query.limit : 25;
     const page: number = req.query.page ? req.query.page : 1;
 
@@ -16,7 +18,7 @@ class PostController {
         .createQueryBuilder("post")
         .where("post.talentId = :id", { id: user })
         .where("post.visibility = :visibility", {
-          visibility: Visibility.PUBLIC
+          visibility: MoreThan(isUser ? Visibility.PRIVATE : Visibility.PUBLIC)
         })
         .leftJoinAndSelect("post.comments", "comments")
         .leftJoinAndSelect("post.talent", "talent")

@@ -6,7 +6,7 @@ import { setTalentId } from "../middlewares/checkTalent";
 const router = Router();
 
 // get all posts
-router.get("/", PostController.listAll);
+router.get("/",[isAuthenticated, setTalentId], PostController.listAll);
 
 // get one post
 router.get("/:id([0-9]+)", PostController.getOneById);
