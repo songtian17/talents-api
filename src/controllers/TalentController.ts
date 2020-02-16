@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import { getRepository, Like } from "typeorm";
-import { validate } from "class-validator";
 
 import { Talent } from "../entity/Talent";
-import { userInfo } from "os";
 
 class TalentController {
   static listAll = async (req: Request, res: Response) => {
@@ -44,7 +42,7 @@ class TalentController {
       });
       res.send(talent);
     } catch (err) {
-      res.send(404).send("Talent not found");
+      res.status(404).send("Talent not found");
     }
   };
 
