@@ -1,5 +1,7 @@
 import { Router } from "express";
 import PostController from "../controllers/PostController";
+import { isAuthenticated } from "../middlewares/checkSession";
+import { setTalentId } from "../middlewares/checkTalent";
 
 const router = Router();
 
@@ -10,9 +12,12 @@ router.get("/", PostController.listAll);
 router.get("/:id([0-9]+)", PostController.getOneById);
 
 // create new post
-router.post("/", PostController.newPost);
+router.post("/", [isAuthenticated, setTalentId], PostController.newPost);
+
+// update one post
+router.put("/:id([0-9]+)", [isAuthenticated, setTalentId], PostController.updatePost);
 
 // delete one post
-router.delete("/:id([0-9]+)", PostController.deletePost);
+router.delete("/:id([0-9]+)", [isAuthenticated, setTalentId], PostController.deletePost);
 
 export default router;

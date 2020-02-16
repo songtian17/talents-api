@@ -9,6 +9,11 @@ import {
 import { Talent } from "./Talent";
 import { Comment } from "./Comment";
 
+export enum Visibility {
+  PRIVATE = "private",
+  PUBLIC = "public"
+}
+
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
@@ -19,6 +24,13 @@ export class Post {
 
   @Column()
   talentId: number;
+
+  @Column({
+    type: "enum",
+    enum: Visibility,
+    default: Visibility.PUBLIC
+  })
+  visibility: Visibility;
 
   @CreateDateColumn()
   createdAt: Date;

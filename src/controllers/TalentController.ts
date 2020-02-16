@@ -21,8 +21,8 @@ class TalentController {
     if (username) {
       try {
         const talent = await talentRepository.find({
-          where: {username: Like(`%${username}%`)}
-        })
+          where: { username: Like(`%${username}%`) }
+        });
         res.send(talent);
         return;
       } catch (err) {
@@ -83,6 +83,7 @@ class TalentController {
 
   static editTalent = async (req: Request, res: Response) => {
     const id: number = Number(req.params.id);
+    const authenticatedTalentId = res.locals.talentId;
 
     const { name, username, profileImageUri, bio } = req.body;
 
@@ -90,6 +91,9 @@ class TalentController {
     let talent: Talent;
     try {
       talent = await talentRepository.findOneOrFail(id);
+      if (authenticatedTalentId != talent.id) {
+        return res.sendStatus(403);
+      }
     } catch (err) {
       res.status(404).send("Talent not found");
     }

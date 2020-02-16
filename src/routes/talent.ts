@@ -1,5 +1,7 @@
 import { Router } from "express";
 import TalentController from "../controllers/TalentController";
+import { isAuthenticated } from "../middlewares/checkSession";
+import { setTalentId } from "../middlewares/checkTalent";
 
 const router = Router();
 
@@ -19,7 +21,7 @@ router.get("/:id([0-9]+)", TalentController.getOneById);
 router.post("/", TalentController.newTalent);
 
 // update one talent
-router.put("/:id([0-9]+)", TalentController.editTalent);
+router.put("/:id([0-9]+)", [isAuthenticated, setTalentId], TalentController.editTalent);
 
 // delete one talent
 router.delete("/:id([0-9]+)", TalentController.deleteTalent);

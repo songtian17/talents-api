@@ -13,6 +13,7 @@
     "@types/body-parser": "^1.17.1",
     "@types/cors": "^2.8.6",
     "@types/jsonwebtoken": "^8.3.7",
+    "aws-sdk": "^2.618.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "class-validator": "^0.11.0",

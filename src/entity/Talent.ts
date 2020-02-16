@@ -14,6 +14,9 @@ export class Talent {
   id: number;
 
   @Column()
+  accountId: number;
+
+  @Column()
   name: string;
 
   @Column()

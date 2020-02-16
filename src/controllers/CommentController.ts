@@ -21,6 +21,10 @@ class CommentController {
   static newComment = async (req: Request, res: Response) => {
     let postId: number = Number(req.params.id);
     let { content, authorId } = req.body;
+    const authenticatedTalentId = res.locals.talentId;
+    if (authenticatedTalentId != authorId) {
+      return res.sendStatus(403)
+    }
     const commentRepository = getRepository("Comment");
 
     let comment = new Comment();

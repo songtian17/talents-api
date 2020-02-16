@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 
-import { Post } from "../entity/Post";
+import { Post, Visibility } from "../entity/Post";
 
 class PostController {
   static listAll = async (req: Request, res: Response) => {
@@ -15,6 +15,9 @@ class PostController {
       posts = await postRepository
         .createQueryBuilder("post")
         .where("post.talentId = :id", { id: user })
+        .where("post.visibility = :visibility", {
+          visibility: Visibility.PUBLIC
+        })
         .leftJoinAndSelect("post.comments", "comments")
         .leftJoinAndSelect("post.talent", "talent")
         .leftJoinAndSelect("comments.author", "author")
@@ -28,6 +31,7 @@ class PostController {
 
     posts = await postRepository
       .createQueryBuilder("post")
+      .where("post.visibility = :visibility", { visibility: Visibility.PUBLIC })
       .leftJoinAndSelect("post.comments", "comments")
       .leftJoinAndSelect("post.talent", "talent")
       .leftJoinAndSelect("comments.author", "author")
@@ -59,10 +63,15 @@ class PostController {
 
   static newPost = async (req: Request, res: Response) => {
     // get params from body
-    let { imageUri, talentId } = req.body;
+    let { imageUri, talentId, visibility } = req.body;
+    const authenticatedTalentId = res.locals.talentId;
+    if (authenticatedTalentId != talentId) {
+      return res.sendStatus(403);
+    }
     let post = new Post();
     post.imageUri = imageUri;
     post.talentId = talentId;
+    post.visibility = visibility;
 
     const postRepository = getRepository(Post);
     try {
@@ -74,9 +83,36 @@ class PostController {
     res.status(201).send("Post created");
   };
 
+  static updatePost = async (req: Request, res: Response) => {
+    const id: number = Number(req.params.id);
+    let { visibility } = req.body;
+    const authenticatedTalentId = res.locals.talentId;
+    const postRepository = getRepository(Post);
+    let post: Post;
+
+    try {
+      post = await postRepository.findOneOrFail(id);
+      if (post.talentId != authenticatedTalentId) {
+        return res.sendStatus(403)
+      }
+    } catch (err) {
+      return res.status(404).send("Post not found");
+    }
+
+    post.visibility = visibility;
+
+    try {
+      await postRepository.save(post);
+    } catch (err) {
+      return res.status(500).send(err);
+    }
+
+    res.status(200).send("Post updated");
+  };
+
   static deletePost = async (req: Request, res: Response) => {
     const id: number = Number(req.params.id);
-
+    const authenticatedTalentId = res.locals.talentId;
     const postRepository = getRepository(Post);
     let post: Post;
 
@@ -85,7 +121,10 @@ class PostController {
     } catch (err) {
       res.status(404).send("Post not found");
     }
-    postRepository.delete(id);
+    if (post.talentId != authenticatedTalentId) {
+      return res.sendStatus(403);
+    }
+    postRepository.delete(post);
 
     res.status(200).send("Post deleted");
   };
