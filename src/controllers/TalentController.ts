@@ -85,7 +85,7 @@ class TalentController {
     const id: number = Number(req.params.id);
     const authenticatedTalentId = res.locals.talentId;
 
-    const { name, username, profileImageUri, bio } = req.body;
+    const { name, username, profileImageUri, bio, isSubscribed } = req.body;
 
     const talentRepository = getRepository(Talent);
     let talent: Talent;
@@ -102,6 +102,7 @@ class TalentController {
     talent.username = username ? username.toLowerCase() : undefined;
     talent.profileImageUri = profileImageUri;
     talent.bio = bio;
+    talent.isSubscribed = isSubscribed;
 
     try {
       await talentRepository.save(talent);
