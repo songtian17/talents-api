@@ -21,7 +21,7 @@ export function getAccountIdFromToken(token: string) {
         }
 
         console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
-        resolve(JSON.parse(JSON.stringify(data)));
+        resolve(JSON.parse(JSON.stringify(data)).Item.accountId);
       }
     );
   });
