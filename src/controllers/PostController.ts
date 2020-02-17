@@ -12,10 +12,9 @@ class PostController {
     const page: number = req.query.page ? req.query.page : 1;
 
     const postRepository = getRepository(Post);
-
-    let qb = postRepository;
     if (req.query.user) {
       if (authenticatedTalentId === user) {
+        console.log("isUser");
         posts = await postRepository
           .createQueryBuilder("Post")
           .where("post.talentId = :id", { id: user })
@@ -26,6 +25,8 @@ class PostController {
           .take(limit)
           .skip(limit * (page - 1))
           .getMany();
+        console.log("No. of posts", posts.length);
+        res.send(posts);
         return;
       }
       posts = await postRepository
