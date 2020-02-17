@@ -8,38 +8,38 @@ class PostController {
     let posts: Post[];
     let user: number = Number(req.query.user);
     const authenticatedTalentId = res.locals.talentId;
-    const isUser = authenticatedTalentId === user;
     const limit: number = req.query.limit ? req.query.limit : 25;
     const page: number = req.query.page ? req.query.page : 1;
 
     const postRepository = getRepository(Post);
-    if (req.query.user) {
-      posts = await postRepository
-        .createQueryBuilder("post")
-        .where("post.talentId = :id", { id: user })
-        .where("post.visibility = :visibility", {
-          visibility: isUser ? Any([Visibility.PRIVATE, Visibility.PUBLIC]) : Visibility.PUBLIC
-        })
-        .leftJoinAndSelect("post.comments", "comments")
-        .leftJoinAndSelect("post.talent", "talent")
-        .leftJoinAndSelect("comments.author", "author")
-        .orderBy("post.createdAt", "DESC")
-        .take(limit)
-        .skip(limit * (page - 1))
-        .getMany();
-      res.send(posts);
-      return;
-    }
 
-    posts = await postRepository
-      .createQueryBuilder("post")
-      .where("post.visibility = :visibility", { visibility: Visibility.PUBLIC })
+    let qb = postRepository
+      .createQueryBuilder("Post")
       .leftJoinAndSelect("post.comments", "comments")
       .leftJoinAndSelect("post.talent", "talent")
       .leftJoinAndSelect("comments.author", "author")
       .orderBy("post.createdAt", "DESC")
       .take(limit)
-      .skip(limit * (page - 1))
+      .skip(limit * (page - 1));
+    if (req.query.user) {
+      if (authenticatedTalentId === user) {
+        posts = await qb.where("post.talentId = :id", { id: user }).getMany();
+        return;
+      }
+      posts = await qb
+        .where("post.talentId = :id", { id: user })
+        .where("post.visibility = :visibility", {
+          visibility: Visibility.PUBLIC
+        })
+        .getMany();
+      res.send(posts);
+      return;
+    }
+
+    posts = await qb
+      .where("post.visibility = :visibility", {
+        visibility: Visibility.PUBLIC
+      })
       .getMany();
     res.send(posts);
   };
