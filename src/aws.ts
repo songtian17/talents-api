@@ -6,7 +6,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 export function getAccountIdFromToken(token: string) {
   return new Promise(function(resolve, reject) {
-    if (!token) {
+    if (!token || token === null) {
       reject("Invalid token");
     }
     docClient.get(
@@ -18,7 +18,11 @@ export function getAccountIdFromToken(token: string) {
         if (err) {
           reject(JSON.parse(JSON.stringify(err)));
         }
-        resolve(JSON.parse(JSON.stringify(data)).Item.accountId);
+        let dataObj = JSON.parse(JSON.stringify(data));
+        if (Object.keys(dataObj).length === 0) {
+          reject("Session not found");
+        }
+        resolve(dataObj.Item.accountId);
       }
     );
   });
