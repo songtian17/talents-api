@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository, Any } from "typeorm";
+import { getRepository } from "typeorm";
 
 import { Post, Visibility } from "../entity/Post";
 
@@ -16,7 +16,7 @@ class PostController {
       if (authenticatedTalentId === user) {
         console.log("isUser");
         posts = await postRepository
-          .createQueryBuilder("Post")
+          .createQueryBuilder("post")
           .where("post.talentId = :id", { id: user })
           .leftJoinAndSelect("post.comments", "comments")
           .leftJoinAndSelect("post.talent", "talent")
@@ -30,7 +30,7 @@ class PostController {
         return;
       }
       posts = await postRepository
-        .createQueryBuilder("Post")
+        .createQueryBuilder("post")
         .where("post.talentId = :id", { id: user })
         .where("post.visibility = :visibility", {
           visibility: Visibility.PUBLIC
