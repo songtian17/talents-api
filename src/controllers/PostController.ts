@@ -141,7 +141,7 @@ class PostController {
     if (post.talentId != authenticatedTalentId) {
       return res.sendStatus(403);
     }
-    postRepository.delete(post);
+    postRepository.delete(id);
 
     res.status(200).send("Post deleted");
   };
