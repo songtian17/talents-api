@@ -6,6 +6,9 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 export function getAccountIdFromToken(token: string) {
   return new Promise(function(resolve, reject) {
+    if (!token) {
+      reject("Invalid token");
+    }
     docClient.get(
       {
         TableName: "sessions",
@@ -13,14 +16,8 @@ export function getAccountIdFromToken(token: string) {
       },
       function(err, data) {
         if (err) {
-          console.error(
-            "Unable to read item. Error JSON:",
-            JSON.stringify(err, null, 2)
-          );
-          reject(err);
+          reject(JSON.parse(JSON.stringify(err)));
         }
-
-        console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
         resolve(JSON.parse(JSON.stringify(data)).Item.accountId);
       }
     );
