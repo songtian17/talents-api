@@ -6,10 +6,13 @@ export const isAuthenticated = (
   res: Response,
   next: NextFunction
 ) => {
-  let token = req.header("Authorization").split(" ")[1];
+  let authHeader = req.header("Authorization");
+  let token = authHeader.split(" ")[1];
   let accountId = getAccountIdFromToken(token);
+  console.log("accountId:", accountId);
   if (!accountId) {
-    return res.sendStatus(401);
+    res.sendStatus(401);
+    return;
   }
   res.locals.accountId = accountId;
   next();

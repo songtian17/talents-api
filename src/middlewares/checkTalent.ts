@@ -17,10 +17,12 @@ export const setTalentId = async (
     });
     res.locals.talentId = talent.id;
   } catch (err) {
+    console.log(err)
     return res.sendStatus(401);
   }
 
   if (!accountId) {
+    console.log('accountId not found')
     return res.sendStatus(401);
   }
   res.locals.accountId = accountId;
