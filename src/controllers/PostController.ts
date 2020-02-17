@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository, MoreThan } from "typeorm";
+import { getRepository, Any } from "typeorm";
 
 import { Post, Visibility } from "../entity/Post";
 
@@ -18,7 +18,7 @@ class PostController {
         .createQueryBuilder("post")
         .where("post.talentId = :id", { id: user })
         .where("post.visibility = :visibility", {
-          visibility: MoreThan(isUser ? Visibility.PRIVATE : Visibility.PUBLIC)
+          visibility: isUser ? Any([Visibility.PRIVATE, Visibility.PUBLIC]) : Visibility.PUBLIC
         })
         .leftJoinAndSelect("post.comments", "comments")
         .leftJoinAndSelect("post.talent", "talent")
