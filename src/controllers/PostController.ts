@@ -13,33 +13,47 @@ class PostController {
 
     const postRepository = getRepository(Post);
 
-    let qb = postRepository
-      .createQueryBuilder("Post")
-      .leftJoinAndSelect("post.comments", "comments")
-      .leftJoinAndSelect("post.talent", "talent")
-      .leftJoinAndSelect("comments.author", "author")
-      .orderBy("post.createdAt", "DESC")
-      .take(limit)
-      .skip(limit * (page - 1));
+    let qb = postRepository;
     if (req.query.user) {
       if (authenticatedTalentId === user) {
-        posts = await qb.where("post.talentId = :id", { id: user }).getMany();
+        posts = await postRepository
+          .createQueryBuilder("Post")
+          .where("post.talentId = :id", { id: user })
+          .leftJoinAndSelect("post.comments", "comments")
+          .leftJoinAndSelect("post.talent", "talent")
+          .leftJoinAndSelect("comments.author", "author")
+          .orderBy("post.createdAt", "DESC")
+          .take(limit)
+          .skip(limit * (page - 1))
+          .getMany();
         return;
       }
-      posts = await qb
+      posts = await postRepository
+        .createQueryBuilder("Post")
         .where("post.talentId = :id", { id: user })
         .where("post.visibility = :visibility", {
           visibility: Visibility.PUBLIC
         })
+        .leftJoinAndSelect("post.comments", "comments")
+        .leftJoinAndSelect("post.talent", "talent")
+        .leftJoinAndSelect("comments.author", "author")
+        .orderBy("post.createdAt", "DESC")
+        .take(limit)
+        .skip(limit * (page - 1))
         .getMany();
       res.send(posts);
       return;
     }
 
-    posts = await qb
-      .where("post.visibility = :visibility", {
-        visibility: Visibility.PUBLIC
-      })
+    posts = await postRepository
+      .createQueryBuilder("post")
+      .where("post.visibility = :visibility", { visibility: Visibility.PUBLIC })
+      .leftJoinAndSelect("post.comments", "comments")
+      .leftJoinAndSelect("post.talent", "talent")
+      .leftJoinAndSelect("comments.author", "author")
+      .orderBy("post.createdAt", "DESC")
+      .take(limit)
+      .skip(limit * (page - 1))
       .getMany();
     res.send(posts);
   };
