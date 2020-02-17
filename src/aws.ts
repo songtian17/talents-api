@@ -19,10 +19,11 @@ export function getAccountIdFromToken(token: string) {
           reject(JSON.parse(JSON.stringify(err)));
         }
         let dataObj = JSON.parse(JSON.stringify(data));
-        if (Object.keys(dataObj).length === 0) {
+        try {
+          resolve(dataObj.Item.accountId);
+        } catch (err) {
           reject("Session not found");
         }
-        resolve(dataObj.Item.accountId);
       }
     );
   });
